@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x6F5EadF6868A6a5003985B2B01a55bb53bf0E0fE";
+const OracleAddress = "0x69d07C79fAa3dCb95F8BE7ae3FA2A346702f0F69";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
@@ -18,7 +18,7 @@ async function runTests() {
     await getUniswapData();
     await getBancorData();
     await getOasisData();
-    await getCurveData()
+    await getCurveData();
   } catch (e) {
     console.log(e);
   }
@@ -87,12 +87,16 @@ async function getOasisData() {
     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "0x6b175474e89094c44da98b954eedeac495271d0f",
-    "0x6b175474e89094c44da98b954eedeac495271d0f"
+    "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
   ];
   const quotes = [
     "0x6b175474e89094c44da98b954eedeac495271d0f",
     "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
     "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+    "0xe41d2489571d322189246dafa5ebde1f4699f498",
+    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
     "0xe41d2489571d322189246dafa5ebde1f4699f498"
   ];
   console.log("Oasis");

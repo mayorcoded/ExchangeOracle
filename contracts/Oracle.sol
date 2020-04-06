@@ -165,20 +165,41 @@ contract Oracle {
     function getOrderBook(address base, address quote) public view returns(Offer[] memory bids, Offer[] memory asks) {
         uint256 offerId;
         uint256 bidCount = oasisMarket.getOfferCount(quote, base);
-        bids = new Offer[](bidCount);
-        offerId = oasisMarket.getBestOffer(quote, base);
-        bids[0] = getOffer(offerId);
-        for (uint256 i = 1; i < bidCount; i++) {
-            offerId = oasisMarket.getWorseOffer(offerId);
-            bids[i] = getOffer(offerId);
+        if (bidCount == 0) {
+            bids = new Offer[](1);
+            bids[0] = Offer({
+                id: 0,
+                maker: 0x0000000000000000000000000000000000000000,
+                makerAmount: 0,
+                takerAmount: 0
+            });
+        } else {
+            bids = new Offer[](bidCount);
+            offerId = oasisMarket.getBestOffer(quote, base);
+            bids[0] = getOffer(offerId);
+            for (uint256 i = 1; i < bidCount; i++) {
+                offerId = oasisMarket.getWorseOffer(offerId);
+                bids[i] = getOffer(offerId);
+            }
         }
+
         uint256 askCount = oasisMarket.getOfferCount(base, quote);
-        asks = new Offer[](askCount);
-        offerId = oasisMarket.getBestOffer(base, quote);
-        asks[0] = getOffer(offerId);
-        for (uint256 i = 1; i < askCount; i++) {
-            offerId = oasisMarket.getWorseOffer(offerId);
-            asks[i] = getOffer(offerId);
+        if (askCount == 0) {
+            asks = new Offer[](1);
+            asks[0] = Offer({
+                id: 0,
+                maker: 0x0000000000000000000000000000000000000000,
+                makerAmount: 0,
+                takerAmount: 0
+            });
+        } else {
+            asks = new Offer[](askCount);
+            offerId = oasisMarket.getBestOffer(base, quote);
+            asks[0] = getOffer(offerId);
+            for (uint256 i = 1; i < askCount; i++) {
+                offerId = oasisMarket.getWorseOffer(offerId);
+                asks[i] = getOffer(offerId);
+            }
         }
     }
 
