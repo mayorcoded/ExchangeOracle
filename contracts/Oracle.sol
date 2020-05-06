@@ -46,6 +46,10 @@ interface MatchingMarket {
     function getWorseOffer(uint256 id) external view returns(uint256 worseOfferId);
 }
 
+interface cToken {
+    function exchangeRateStored() external pure returns (uint256);
+}
+
 contract Oracle {
     struct uniswapData {
         uint256 tokenBalance;
@@ -136,6 +140,25 @@ contract Oracle {
         return data;
     }
 
+    struct curveSusdData {
+        uint256 balance;
+        uint256 A;
+    } 
+    CurveExchange public SusdExchange = CurveExchange(0xA5407eAE9Ba41422680e2e00537571bcC53efBfD);
+    function getCurveSusdData(int128[] memory ids) public view returns (curveSusdData[] memory) {
+        uint256 length = ids.length;
+        curveSusdData[] memory data = new curveSusdData[](length);
+        for (uint256 i = 0; i < length; ++i) {
+            uint256 balance = SusdExchange.balances(ids[i]);
+            uint256 A = SusdExchange.A();
+            data[i] = curveSusdData({
+                balance: balance,
+                A: A
+            });
+        }
+        return data;
+    }
+
     struct Offer {
         uint256 id;
         address maker;
@@ -211,5 +234,15 @@ contract Oracle {
 
     function min(uint256 a, uint256 b) internal pure returns (uint256) {
         return a < b ? a : b;
+    }
+
+    function getCompoundData(cToken[] memory tokens) public view returns (uint256[] memory) {
+        uint256 length = tokens.length;
+		uint256[] memory data = new uint256[](length);
+		for (uint256 i = 0; i < length; ++i) {
+			uint256 rate = tokens[i].exchangeRateStored();
+            data[i] = rate;
+		}
+		return data;
     }
 }
