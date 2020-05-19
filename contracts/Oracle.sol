@@ -22,6 +22,16 @@ interface BancorConverter {
     function conversionFee() external pure returns (uint32);
 }
 
+interface BalancerPool {
+    function isPublicSwap() external view returns (bool);
+    function isFinalized() external view returns (bool);
+    function isBound(address t) external view returns (bool);
+    function getFinalTokens() external view returns (address[] memory tokens);
+    function getDenormalizedWeight(address token) external view returns (uint);
+    function getBalance(address token) external view returns (uint);
+    function getSwapFee() external view returns (uint);
+}
+
 interface SynthetixDepot {
     function totalSellableDeposits() external pure returns (uint256);
 }
@@ -33,6 +43,10 @@ interface SynthetixRates {
 interface CurveExchange {
     function balances(int128) external pure returns (uint256);
     function A() external pure returns (uint256);
+}
+
+interface BalancerExchange {
+    function pools(int128) external pure returns (uint256);
 }
 
 interface yToken {
@@ -98,6 +112,54 @@ contract Oracle {
                 tBalance: tBalance,
                 eBalance: eBalance
             });
+        }
+        return data;
+    }
+
+    
+    struct balancerToken {
+        address token;
+        bool isBound;   // is token bound to pool
+        uint denorm;  // denormalized weight
+        uint balance;
+    }
+    struct balancerData {
+        address pool;
+        balancerToken[] tokens;
+        uint fee;
+    }
+    function getBalancerData(address[] memory pools) public view returns (balancerData[] memory) {
+        uint256 length = pools.length;
+        balancerData[] memory data = new balancerData[](length);
+        for (uint256 i = 0; i < length; ++i) {
+            address pool = address(pools[i]);
+            BalancerPool BP = BalancerPool(pool);
+            bool isPublicSwap = BP.isPublicSwap();
+            bool isFinalized = BP.isFinalized();
+            // Token allows for public swap and pool creation is finalized
+            if (isPublicSwap && isFinalized) {
+                address[] memory balancerTokens = BP.getFinalTokens();
+                balancerToken[] memory tokenData = new balancerToken[](balancerTokens.length);
+                for (uint256 j = 0; j < balancerTokens.length; ++j) {
+                    address token = address(balancerTokens[j]);
+                    bool isBound = BP.isBound(token);   // is token bound to pool
+                    uint denorm = BP.getDenormalizedWeight(token);  // denormalized weight
+                    uint balance =  BP.getBalance(token); 
+                    tokenData[i] = balancerToken({
+                        token: token,
+                        isBound: isBound,
+                        denorm: denorm,
+                        balance: balance
+                    });
+                }
+                uint fee = BP.getSwapFee();
+                data[i] = balancerData({
+                    pool: pool,
+                    tokens: tokenData,
+                    fee: fee
+                });
+
+            }
         }
         return data;
     }
