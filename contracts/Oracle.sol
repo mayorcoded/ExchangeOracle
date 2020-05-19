@@ -22,6 +22,16 @@ interface BancorConverter {
     function conversionFee() external pure returns (uint32);
 }
 
+interface BalancerPools {
+    function isPublicSwap() external view returns (bool);
+    function isFinalized() external view returns (bool);
+    function isBound(address t) external view returns (bool);
+    function getCurrentTokens() external view returns (address[] memory tokens);
+    function getDenormalizedWeight(address token) external view returns (uint)
+    function getBalance(address token) external view returns (uint);
+    function getSwapFee() external view returns (uint)
+}
+
 interface SynthetixDepot {
     function totalSellableDeposits() external pure returns (uint256);
 }
@@ -33,6 +43,10 @@ interface SynthetixRates {
 interface CurveExchange {
     function balances(int128) external pure returns (uint256);
     function A() external pure returns (uint256);
+}
+
+interface BalancerExchange {
+    function pools(int128) external pure returns (uint256);
 }
 
 interface yToken {
@@ -81,6 +95,41 @@ contract Oracle {
     }
     IERC20Token public BNT = IERC20Token(0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C);
     function getBancorData(IERC20Token[] memory tokens, BancorConverter[] memory converters) public view returns (bancorData[] memory) {
+        uint256 length = tokens.length;
+        bancorData[] memory data = new bancorData[](length);
+        for (uint256 i = 0; i < length; ++i) {
+            BancorConverter converter = converters[i];
+            BancorConverter.tokenInfo memory info = converter.connectors(tokens[i]);
+            uint32 eWeight = info.ratio;
+            uint32 tWeight = 1000000 - eWeight;
+            uint32 tFee = converter.conversionFee();
+            uint256 tBalance = tokens[i].balanceOf(address(converter));
+            uint256 eBalance = BNT.balanceOf(address(converter));
+            data[i] = bancorData({
+                eWeight: eWeight,
+                tWeight: tWeight,
+                tFee: tFee,
+                tBalance: tBalance,
+                eBalance: eBalance
+            });
+        }
+        return data;
+    }
+
+    
+    struct balancerToken {
+        bool bound;   // is token bound to pool
+        uint index;   // private
+        uint denorm;  // denormalized weight
+        uint balance;
+    }
+    struct balancerData {
+        address pool;
+        mapping (uint => balancerToken) public tokens;
+        uint fee;
+    }
+    IERC20Token public BNT = IERC20Token(0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C);
+    function getBancorData(string[] memory pools) public view returns (balancerData[] memory) {
         uint256 length = tokens.length;
         bancorData[] memory data = new bancorData[](length);
         for (uint256 i = 0; i < length; ++i) {
