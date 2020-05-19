@@ -22,14 +22,14 @@ interface BancorConverter {
     function conversionFee() external pure returns (uint32);
 }
 
-interface BalancerPools {
+interface BalancerPool {
     function isPublicSwap() external view returns (bool);
     function isFinalized() external view returns (bool);
     function isBound(address t) external view returns (bool);
-    function getCurrentTokens() external view returns (address[] memory tokens);
-    function getDenormalizedWeight(address token) external view returns (uint)
+    function getFinalTokens() external view returns (address[] memory tokens);
+    function getDenormalizedWeight(address token) external view returns (uint);
     function getBalance(address token) external view returns (uint);
-    function getSwapFee() external view returns (uint)
+    function getSwapFee() external view returns (uint);
 }
 
 interface SynthetixDepot {
@@ -118,35 +118,48 @@ contract Oracle {
 
     
     struct balancerToken {
-        bool bound;   // is token bound to pool
-        uint index;   // private
+        address token;
+        bool isBound;   // is token bound to pool
         uint denorm;  // denormalized weight
         uint balance;
     }
     struct balancerData {
         address pool;
-        mapping (uint => balancerToken) public tokens;
+        balancerToken[] tokens;
         uint fee;
     }
-    IERC20Token public BNT = IERC20Token(0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C);
-    function getBancorData(string[] memory pools) public view returns (balancerData[] memory) {
-        uint256 length = tokens.length;
-        bancorData[] memory data = new bancorData[](length);
+    function getBalancerData(address[] memory pools) public view returns (balancerData[] memory) {
+        uint256 length = pools.length;
+        balancerData[] memory data = new balancerData[](length);
         for (uint256 i = 0; i < length; ++i) {
-            BancorConverter converter = converters[i];
-            BancorConverter.tokenInfo memory info = converter.connectors(tokens[i]);
-            uint32 eWeight = info.ratio;
-            uint32 tWeight = 1000000 - eWeight;
-            uint32 tFee = converter.conversionFee();
-            uint256 tBalance = tokens[i].balanceOf(address(converter));
-            uint256 eBalance = BNT.balanceOf(address(converter));
-            data[i] = bancorData({
-                eWeight: eWeight,
-                tWeight: tWeight,
-                tFee: tFee,
-                tBalance: tBalance,
-                eBalance: eBalance
-            });
+            address pool = address(pools[i]);
+            BalancerPool BP = BalancerPool(pool);
+            bool isPublicSwap = BP.isPublicSwap();
+            bool isFinalized = BP.isFinalized();
+            // Token allows for public swap and pool creation is finalized
+            if (isPublicSwap && isFinalized) {
+                address[] memory balancerTokens = BP.getFinalTokens();
+                balancerToken[] memory tokenData = new balancerToken[](balancerTokens.length);
+                for (uint256 j = 0; j < balancerTokens.length; ++j) {
+                    address token = address(balancerTokens[j]);
+                    bool isBound = BP.isBound(token);   // is token bound to pool
+                    uint denorm = BP.getDenormalizedWeight(token);  // denormalized weight
+                    uint balance =  BP.getBalance(token); 
+                    tokenData[i] = balancerToken({
+                        token: token,
+                        isBound: isBound,
+                        denorm: denorm,
+                        balance: balance
+                    });
+                }
+                uint fee = BP.getSwapFee();
+                data[i] = balancerData({
+                    pool: pool,
+                    tokens: tokenData,
+                    fee: fee
+                });
+
+            }
         }
         return data;
     }
