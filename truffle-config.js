@@ -33,7 +33,7 @@ module.exports = {
     mainnet: {
       provider: () => new HDWalletProvider(mnemonic, infuraMainnet),
       network_id: 1,       // Mainnet's id
-      gas: 2500000,        // Mainnet gas limit
+      gas: 8000000,        // Mainnet gas limit
       gasPrice: 15000000000,
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)

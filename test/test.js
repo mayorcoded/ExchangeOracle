@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x69d07C79fAa3dCb95F8BE7ae3FA2A346702f0F69";
+const OracleAddress = "0xC4354Dc75Bfe61aa8960D4624d29bB4cb74CB3D9";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
@@ -19,6 +19,7 @@ async function runTests() {
     await getBancorData();
     await getOasisData();
     await getCurveData();
+    await getBalancerData();
   } catch (e) {
     console.log(e);
   }
@@ -103,5 +104,17 @@ async function getOasisData() {
   const oasisData = await Oracle.methods.getOasisData(bases, quotes).call();
   for (let i = 0; i < bases.length; i++) {
     console.log(bases[i], quotes[i], oasisData[i]);
+  }
+}
+
+async function getBalancerData() {
+  const pools = [
+   "0x987D7Cc04652710b74Fff380403f5c02f82e290a",
+   "0xc0b2B0C5376Cb2e6f73b473A7CAA341542F707Ce"
+  ];
+  console.log("Balancer");
+  const balancerData = await Oracle.methods.getBalancerData(pools).call();
+  for (let i = 0; i < pools.length; i++) {
+    console.log(pools[i], balancerData[i]);
   }
 }
