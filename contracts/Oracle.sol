@@ -128,7 +128,7 @@ contract Oracle {
         balancerToken[] tokens;
         uint fee;
     }
-    function getBalancerData(address[] memory pools) public view returns (balancerData[] memory) {
+    function getBalancerData(BalancerPool[] memory pools) public view returns (balancerData[] memory) {
         uint256 length = pools.length;
         balancerData[] memory data = new balancerData[](length);
         for (uint256 i = 0; i < length; ++i) {

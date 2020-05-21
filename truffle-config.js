@@ -18,7 +18,7 @@
  *
  */
 const fs = require('fs');
-
+// require('dotenv').config();
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const infuraMainnet = fs.readFileSync(".infura").toString().trim();
 const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -32,6 +32,7 @@ module.exports = {
     },
     mainnet: {
       provider: () => new HDWalletProvider(mnemonic, infuraMainnet),
+      // provider: () => new HDWalletProvider(`${process.env.METAMASK_KEY}`, `${process.env.INFURA_MAINNET}`, 0, 1),
       network_id: 1,       // Mainnet's id
       gas: 8000000,        // Mainnet gas limit
       gasPrice: 15000000000,
