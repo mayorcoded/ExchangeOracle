@@ -147,10 +147,10 @@ contract Oracle {
                     bool isBound = BP.isBound(token);   // is token bound to pool
                     uint denorm = BP.getDenormalizedWeight(token);  // denormalized weight
                     uint balance = BP.getBalance(token);
-                    tokenData[i] = BalancerPool.balancerToken({
+                    tokenData[j] = BalancerPool.balancerToken({
                         token: token,
                         isBound: isBound,
-                        index: i,
+                        index: j,
                         denorm: denorm,
                         balance: balance
                     });
