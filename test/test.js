@@ -111,6 +111,8 @@ async function getBalancerData() {
   const pools = [
     '0x987D7Cc04652710b74Fff380403f5c02f82e290a',
     '0xd59BF8773F89e0DDE3eC745aEBEae0Da2b4AF66f',
+    '0xc0b2B0C5376Cb2e6f73b473A7CAA341542F707Ce',
+    '0x07d13ED39EE291C1506675Ff42f9B2b6b50E2d3E'
   ];
   console.log("Balancer");
   const balancerData = await Oracle.methods.getBalancerData(pools).call();
