@@ -1,7 +1,7 @@
 .infura
 .secret
-build
 node_modules
 package-lock.json
 .openzeppelin/.session
 .openzeppelin/
+.env
