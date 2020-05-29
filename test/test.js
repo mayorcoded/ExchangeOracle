@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x424ab440df8e51ffa145040a12912518a839cb9b";
+const OracleAddress = "0xC72BfEc9980E57cA070234332A2B30b10Ceed940";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
@@ -20,6 +20,7 @@ async function runTests() {
     // await getOasisData();
     // await getCurveData();
     await getBalancerData();
+    await getOpynData();
   } catch (e) {
     console.log(e);
   }
@@ -118,5 +119,13 @@ async function getBalancerData() {
   const balancerData = await Oracle.methods.getBalancerData(pools).call();
   for (let i = 0; i < pools.length; i++) {
     console.log(pools[i], balancerData[i]);
+  }
+}
+
+async function getOpynData() {
+  console.log("Opyn");
+  const opynData = await Oracle.methods.getOpynData().call({gasLimit: '8000000'});
+  for (let i = 0; i < opynData.length; i++) {
+    console.log(opynData[i]);
   }
 }

@@ -77,6 +77,17 @@ interface cToken {
     function exchangeRateStored() external pure returns (uint256);
 }
 
+interface OptionsFactory {
+    function getNumberOfOptionsContracts() external pure returns (uint256);
+    function optionsContracts(uint256) external pure returns(address);
+}
+
+interface oToken {
+    function name() external pure returns (string memory);
+    function symbol() external pure returns (string memory);
+    function expiry() external pure returns (uint256);
+}
+
 contract Oracle {
     struct uniswapData {
         uint256 tokenBalance;
@@ -309,5 +320,37 @@ contract Oracle {
             data[i] = rate;
 		}
 		return data;
+    }
+
+    struct opynData {
+        address oTokenAddress;
+        string name;
+        string symbol;
+        uint256 expiry;
+    }
+
+    OptionsFactory public opynFactory = OptionsFactory(0xcC5d905b9c2c8C9329Eb4e25dc086369D6C7777C);
+    function getOpynData() public view returns (opynData[] memory) {
+        uint256 numOTokens = opynFactory.getNumberOfOptionsContracts();
+        opynData[] memory data = new opynData[](numOTokens);
+
+        for (uint256 i = 0; i < numOTokens; i++) {
+            address token = opynFactory.optionsContracts(i);
+            oToken o = oToken(token);
+            uint256 expiry = o.expiry();
+            if (now < expiry) {
+                string memory name = o.name();
+                string memory symbol = o.symbol();
+
+                data[i] = opynData({
+                    oTokenAddress: token,
+                    name: name,
+                    symbol: symbol,
+                    expiry: expiry
+                });
+            }
+        }
+
+        return data;
     }
 }
