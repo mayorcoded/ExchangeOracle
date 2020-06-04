@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x424ab440df8e51ffa145040a12912518a839cb9b";
+const OracleAddress = "0xC72BfEc9980E57cA070234332A2B30b10Ceed940";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
@@ -20,6 +20,7 @@ async function runTests() {
     // await getOasisData();
     // await getCurveData();
     await getBalancerData();
+    await getOpynData();
   } catch (e) {
     console.log(e);
   }
@@ -109,12 +110,22 @@ async function getOasisData() {
 
 async function getBalancerData() {
   const pools = [
+    '0x987D7Cc04652710b74Fff380403f5c02f82e290a',
+    '0xd59BF8773F89e0DDE3eC745aEBEae0Da2b4AF66f',
     '0xc0b2B0C5376Cb2e6f73b473A7CAA341542F707Ce',
-    '0x07d13ED39EE291C1506675Ff42f9B2b6b50E2d3E',
+    '0x07d13ED39EE291C1506675Ff42f9B2b6b50E2d3E'
   ];
   console.log("Balancer");
   const balancerData = await Oracle.methods.getBalancerData(pools).call();
   for (let i = 0; i < pools.length; i++) {
     console.log(pools[i], balancerData[i]);
+  }
+}
+
+async function getOpynData() {
+  console.log("Opyn");
+  const opynData = await Oracle.methods.getOpynData().call({gasLimit: '8000000'});
+  for (let i = 0; i < opynData.length; i++) {
+    console.log(opynData[i]);
   }
 }
