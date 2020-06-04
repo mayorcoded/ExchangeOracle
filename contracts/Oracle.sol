@@ -187,7 +187,7 @@ contract Oracle {
         uint256 balance;
         uint256 pricePerShare;
         uint256 A;
-    } 
+    }
     CurveExchange public Exchange = CurveExchange(0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51);
     function getCurveData(int128[] memory ids, yToken[] memory tokens) public view returns (curveData[] memory) {
         uint256 length = ids.length;
@@ -205,37 +205,18 @@ contract Oracle {
         return data;
     }
 
-    struct curveSusdData {
+    struct curveCTokenData {
         uint256 balance;
         uint256 A;
-    } 
-    CurveExchange public SusdExchange = CurveExchange(0xA5407eAE9Ba41422680e2e00537571bcC53efBfD);
-    function getCurveSusdData(int128[] memory ids) public view returns (curveSusdData[] memory) {
-        uint256 length = ids.length;
-        curveSusdData[] memory data = new curveSusdData[](length);
-        for (uint256 i = 0; i < length; ++i) {
-            uint256 balance = SusdExchange.balances(ids[i]);
-            uint256 A = SusdExchange.A();
-            data[i] = curveSusdData({
-                balance: balance,
-                A: A
-            });
-        }
-        return data;
     }
-
-    struct curveRenBtcData {
-        uint256 balance;
-        uint256 A;
-    } 
-    CurveExchange public RenBtcExchange = CurveExchange(0x93054188d876f558f4a66B2EF1d97d16eDf0895B);
-    function getCurveRenBtcData(int128[] memory ids) public view returns (curveRenBtcData[] memory) {
+    function getCurveCData(int128[] memory ids, address exchange) public view returns (curveCTokenData[] memory) {
+        CurveExchange tokenExchange = CurveExchange(exchange);
         uint256 length = ids.length;
-        curveRenBtcData[] memory data = new curveRenBtcData[](length);
+        curveCTokenData[] memory data = new curveCTokenData[](length);
         for (uint256 i = 0; i < length; ++i) {
-            uint256 balance = RenBtcExchange.balances(ids[i]);
-            uint256 A = RenBtcExchange.A();
-            data[i] = curveRenBtcData({
+            uint256 balance = tokenExchange.balances(ids[i]);
+            uint256 A = tokenExchange.A();
+            data[i] = curveCTokenData({
                 balance: balance,
                 A: A
             });
