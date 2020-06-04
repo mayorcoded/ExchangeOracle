@@ -224,6 +224,25 @@ contract Oracle {
         return data;
     }
 
+    struct curveRenBtcData {
+        uint256 balance;
+        uint256 A;
+    } 
+    CurveExchange public RenBtcExchange = CurveExchange(0x93054188d876f558f4a66B2EF1d97d16eDf0895B);
+    function getCurveRenBtcData(int128[] memory ids) public view returns (curveRenBtcData[] memory) {
+        uint256 length = ids.length;
+        curveRenBtcData[] memory data = new curveRenBtcData[](length);
+        for (uint256 i = 0; i < length; ++i) {
+            uint256 balance = RenBtcExchange.balances(ids[i]);
+            uint256 A = RenBtcExchange.A();
+            data[i] = curveRenBtcData({
+                balance: balance,
+                A: A
+            });
+        }
+        return data;
+    }
+
     struct Offer {
         uint256 id;
         address maker;
