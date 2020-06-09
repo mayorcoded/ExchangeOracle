@@ -149,9 +149,8 @@ contract Oracle {
             address pool = address(pools[i]);
             BalancerPool BP = BalancerPool(pool);
             bool isPublicSwap = BP.isPublicSwap();
-            bool isFinalized = BP.isFinalized();
-            // Token allows for public swap and pool creation is finalized
-            if (isPublicSwap && isFinalized) {
+            // Token allows for public swap
+            if (isPublicSwap) {
                 address[] memory balancerTokens = BP.getFinalTokens();
                 BalancerPool.balancerToken[] memory tokenData = new BalancerPool.balancerToken[](balancerTokens.length);
                 for (uint256 j = 0; j < balancerTokens.length; ++j) {
