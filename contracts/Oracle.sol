@@ -86,6 +86,7 @@ interface oToken {
     function name() external pure returns (string memory);
     function symbol() external pure returns (string memory);
     function expiry() external pure returns (uint256);
+    function decimals() external pure returns (uint256);
 }
 
 contract Oracle {
@@ -327,6 +328,7 @@ contract Oracle {
         string name;
         string symbol;
         uint256 expiry;
+        uint256 decimals;
     }
 
     OptionsFactory public opynFactory = OptionsFactory(0xcC5d905b9c2c8C9329Eb4e25dc086369D6C7777C);
@@ -341,12 +343,14 @@ contract Oracle {
             if (now < expiry) {
                 string memory name = o.name();
                 string memory symbol = o.symbol();
+                uint256 decimals = o.decimals();
 
                 data[i] = opynData({
                     oTokenAddress: token,
                     name: name,
                     symbol: symbol,
-                    expiry: expiry
+                    expiry: expiry,
+                    decimals: decimals
                 });
             }
         }
