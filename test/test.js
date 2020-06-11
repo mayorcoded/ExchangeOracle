@@ -16,11 +16,12 @@ async function runTests() {
   try {
     // await getSynthetixData();
     // await getUniswapData();
+    await getUniswapV2Data();
     // await getBancorData();
     // await getOasisData();
     // await getCurveData();
-    await getBalancerData();
-    await getOpynData();
+    // await getBalancerData();
+    // await getOpynData();
   } catch (e) {
     console.log(e);
   }
@@ -44,6 +45,19 @@ async function getUniswapData() {
   console.log("Uniswap");
   for (let i = 0; i < tokens.length; i++) {
     console.log(tokens[i], uniswapData[i]);
+  }
+}
+
+async function getUniswapV2Data() {
+  let pairs = [
+    "0x3fd4Cf9303c4BC9E13772618828712C8EaC7Dd2F",
+    "0xBb2b8038a1640196FbE3e38816F3e67Cba72D940",
+    "0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5"
+  ];
+  const uniswapV2Data = await Oracle.methods.getUniswapV2Data(pairs).call();
+  console.log("Uniswap V2");
+  for (let i = 0; i < pairs.length; i++) {
+    console.log(pairs[i], uniswapV2Data[i]);
   }
 }
 
