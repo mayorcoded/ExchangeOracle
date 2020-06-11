@@ -39,7 +39,7 @@ interface BalancerPool {
     function isPublicSwap() external view returns (bool);
     function isFinalized() external view returns (bool);
     function isBound(address t) external view returns (bool);
-    function getFinalTokens() external view returns (address[] memory tokens);
+    function getCurrentTokens() external view returns (address[] memory tokens);
     function getDenormalizedWeight(address token) external view returns (uint);
     function getBalance(address token) external view returns (uint);
     function getSwapFee() external view returns (uint);
@@ -151,7 +151,7 @@ contract Oracle {
             bool isPublicSwap = BP.isPublicSwap();
             // Token allows for public swap
             if (isPublicSwap) {
-                address[] memory balancerTokens = BP.getFinalTokens();
+                address[] memory balancerTokens = BP.getCurrentTokens();
                 BalancerPool.balancerToken[] memory tokenData = new BalancerPool.balancerToken[](balancerTokens.length);
                 for (uint256 j = 0; j < balancerTokens.length; ++j) {
                     address token = balancerTokens[j];
