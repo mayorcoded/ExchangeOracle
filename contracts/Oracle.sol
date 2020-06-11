@@ -9,6 +9,17 @@ interface UniswapFactory {
     function getExchange(IERC20Token) external pure returns (address);
 }
 
+interface UniswapV2Pair {
+    struct reserves {
+        uint112 reserve0;
+        uint112 reserve1;
+        uint32 blockTimestampLast;
+    }
+    function getReserves() external view returns (reserves memory);
+    function token0() external view returns (address);
+    function token1() external view returns (address);
+}
+
 interface BancorConverter {
     struct tokenInfo {
         uint256 virtualBalance;
@@ -106,6 +117,38 @@ contract Oracle {
             data[i] = uniswapData({
                 tokenBalance: tokenBalance,
                 ethBalance: ethBalance
+            });
+		}
+		return data;
+	}
+
+    struct uniswapV2TokenBalance {
+        address token;
+        uint256 balance;
+    }
+    struct uniswapV2Data {
+        uniswapV2TokenBalance token0;
+        uniswapV2TokenBalance token1;
+    }
+    function getUniswapV2Data(UniswapV2Pair[] memory pairs) public view returns (uniswapV2Data[] memory) {
+        uint256 length = pairs.length;
+		uniswapV2Data[] memory data = new uniswapV2Data[](length);
+		for (uint256 i = 0; i < length; ++i) {
+            UniswapV2Pair pair = pairs[i];
+
+            address token0 = pair.token0();
+            address token1 = pair.token1();
+            UniswapV2Pair.reserves memory reserves = pair.getReserves();
+
+            data[i] = uniswapV2Data({
+                token0: uniswapV2TokenBalance({
+                    token: token0,
+                    balance: reserves.reserve0
+                }),
+                token1: uniswapV2TokenBalance({
+                    token: token1,
+                    balance: reserves.reserve1
+                })
             });
 		}
 		return data;
