@@ -1,28 +1,39 @@
 {
-  "contractName": "OptionsFactory",
+  "contractName": "UniswapV2Pair",
   "abi": [
     {
       "inputs": [],
-      "name": "getNumberOfOptionsContracts",
+      "name": "getReserves",
       "outputs": [
         {
-          "internalType": "uint256",
+          "components": [
+            {
+              "internalType": "uint112",
+              "name": "reserve0",
+              "type": "uint112"
+            },
+            {
+              "internalType": "uint112",
+              "name": "reserve1",
+              "type": "uint112"
+            },
+            {
+              "internalType": "uint32",
+              "name": "blockTimestampLast",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct UniswapV2Pair.reserves",
           "name": "",
-          "type": "uint256"
+          "type": "tuple"
         }
       ],
-      "stateMutability": "pure",
+      "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "optionsContracts",
+      "inputs": [],
+      "name": "token0",
       "outputs": [
         {
           "internalType": "address",
@@ -30,11 +41,24 @@
           "type": "address"
         }
       ],
-      "stateMutability": "pure",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token1",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.10+commit.00c0fcaf\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getNumberOfOptionsContracts\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"optionsContracts\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/nathanieloden/Documents/progrimz/ConcourseOpen/oracles/contracts/Oracle.sol\":\"OptionsFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":5000000},\"remappings\":[]},\"sources\":{\"/Users/nathanieloden/Documents/progrimz/ConcourseOpen/oracles/contracts/Oracle.sol\":{\"keccak256\":\"0x03cfc01148a2d618b4060700903392979c193780a785020ae6232df310e51be8\",\"urls\":[\"bzz-raw://9d2097ada067b896a14a03a58e63d0789d85da780ad67241fcbac0339943252a\",\"dweb:/ipfs/QmTL2CJP1oUCzZcG2uX7K1Vdk1qonFGs11irjni9zKa4aJ\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.10+commit.00c0fcaf\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getReserves\",\"outputs\":[{\"components\":[{\"internalType\":\"uint112\",\"name\":\"reserve0\",\"type\":\"uint112\"},{\"internalType\":\"uint112\",\"name\":\"reserve1\",\"type\":\"uint112\"},{\"internalType\":\"uint32\",\"name\":\"blockTimestampLast\",\"type\":\"uint32\"}],\"internalType\":\"struct UniswapV2Pair.reserves\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token0\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token1\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/nathanieloden/Documents/progrimz/ConcourseOpen/oracles/contracts/Oracle.sol\":\"UniswapV2Pair\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":5000000},\"remappings\":[]},\"sources\":{\"/Users/nathanieloden/Documents/progrimz/ConcourseOpen/oracles/contracts/Oracle.sol\":{\"keccak256\":\"0x03cfc01148a2d618b4060700903392979c193780a785020ae6232df310e51be8\",\"urls\":[\"bzz-raw://9d2097ada067b896a14a03a58e63d0789d85da780ad67241fcbac0339943252a\",\"dweb:/ipfs/QmTL2CJP1oUCzZcG2uX7K1Vdk1qonFGs11irjni9zKa4aJ\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
@@ -37745,7 +37769,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-06-17T18:07:18.053Z",
+  "updatedAt": "2020-06-17T18:07:18.173Z",
   "devdoc": {
     "methods": {}
   },

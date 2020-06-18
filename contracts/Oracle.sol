@@ -171,7 +171,7 @@ contract Oracle {
             uint32 eWeight = info.ratio;
             uint32 tWeight = 1000000 - eWeight;
             uint32 tFee = converter.conversionFee();
-            uint256 tBalance = tokens[i].balanceOf(address(converter));
+            uint256 tBalance = address(tokens[i]) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE ? address(converter).balance : tokens[i].balanceOf(address(converter));
             uint256 eBalance = BNT.balanceOf(address(converter));
             data[i] = bancorData({
                 eWeight: eWeight,

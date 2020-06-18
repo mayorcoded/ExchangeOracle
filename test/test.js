@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x4Df0BEBee8c638C2989bB9f5b472fFAB83f2B0F2";
+const OracleAddress = "0x3Edf2bB7BD527F03C56c3410646eA241103525DC";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
