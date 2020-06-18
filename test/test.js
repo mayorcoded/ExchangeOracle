@@ -6,7 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const OracleAddress = "0x3Edf2bB7BD527F03C56c3410646eA241103525DC";
+const OracleAddress = "0x66ddc953486128fb74089c4b5bd2ff52331b3d52";
 
 const Oracle = new web3.eth.Contract(OracleAbi.abi, OracleAddress);
 
@@ -14,14 +14,14 @@ runTests();
 
 async function runTests() {
   try {
-    // await getSynthetixData();
-    // await getUniswapData();
+    await getSynthetixData();
+    await getUniswapData();
     await getUniswapV2Data();
-    // await getBancorData();
-    // await getOasisData();
-    // await getCurveData();
-    // await getBalancerData();
-    // await getOpynData();
+    await getBancorData();
+    await getOasisData();
+    await getCurveData();
+    await getBalancerData();
+    await getOpynData();
   } catch (e) {
     console.log(e);
   }
