@@ -68,19 +68,21 @@ interface IKyberHint {
 contract KyberPrice {
 	KyberProxy private proxy = KyberProxy(0x9AAb3f75489902f3a48495025729a0AF77d4b11e);
 	IERC20Token private etherToken = IERC20Token(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-    IKyberHint private kyberHintBuilder = IKyberHint(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-    IKyberStorage kyberStorage = IKyberStorage();
+    IKyberHint private kyberHintBuilder = IKyberHint(0xa1C0Fa73c39CFBcC11ec9Eb1Afc665aba9996E2C);
+    IKyberStorage kyberStorage = IKyberStorage(0xC8fb12402cB16970F3C5F4b48Ff68Eb9D1289301);
 	// KyberExpected private expected = KyberExpected(0x38a5CF926A0b9B5fE3A265C57D184aD8c0AF05b6);
 
 	function getOutputAmount(IERC20Token _from, IERC20Token _to, uint256 _amount) internal view returns (uint256) {
         bytes32[] memory reserveIds;
         uint256[] memory emptySplits;
+        bytes memory hint;
         if (_from == etherToken) {
-            reserveIds = kyberStorage.getReserveIdsPerTokenSrc(_from);
-        } else {
             reserveIds = kyberStorage.getReserveIdsPerTokenDest(_to);
+            hint = kyberHintBuilder.buildEthToTokenHint(_to, TradeType.MaskOut, reserveIds, emptySplits);
+        } else {
+            reserveIds = kyberStorage.getReserveIdsPerTokenSrc(_from);
+            hint = kyberHintBuilder.buildTokenToEthHint(_from, TradeType.MaskOut, reserveIds, emptySplits);
         }
-        bytes memory hint = kyberHintBuilder.buildTokenToEthHint(_from, TradeType.MaskOut, reserveIds, emptySplits);
 		uint256 expectedRate = proxy.getExpectedRateAfterFee(_from, _to, _amount, 0, hint);
 		uint256 defaultMultiplier = getMultiplier(etherToken);
 		uint256 fromMultiplier = getMultiplier(_from);
